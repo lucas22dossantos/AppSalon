@@ -1,0 +1,21 @@
+# Dependencias PHP
+backend/vendor/
+
+# Dependencias JavaScript
+frontend/node_modules/
+backend/node_modules/
+
+# Variables de entorno y credenciales
+.env
+.env.*
+!.env.example
+
+# Archivos generados por la compilacion
+backend/public/build/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
