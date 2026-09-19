@@ -6,7 +6,7 @@ El proyecto está diseñado para evolucionar hacia una arquitectura con una API 
 
 ## Estado actual
 
-- **Hecho:** planificación, arquitectura y estructura del repositorio.
+- **Hecho:** planificación y definición de la arquitectura.
 - **En curso:** preparación del backend y creación del proyecto de frontend con Vite.
 - **Todavía no ejecutable:** aún no hay aplicación que correr. Las casillas de [Funcionalidades](#funcionalidades) muestran el avance.
 
