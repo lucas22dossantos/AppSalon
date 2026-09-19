@@ -80,9 +80,9 @@ Cada carpeta principal tiene sus propias dependencias: `vendor/` y `node_modules
 
 ### Proyecto
 
-- [ ] Repositorio público en GitHub
-- [ ] `.gitignore` con dependencias, credenciales y archivos del sistema
-- [ ] Estructura base del backend en `backend/`
+- [x] Repositorio público en GitHub
+- [x] `.gitignore` con dependencias, credenciales y archivos del sistema
+- [x] Estructura base del backend en `backend/`
 
 ### Frontend (React)
 
