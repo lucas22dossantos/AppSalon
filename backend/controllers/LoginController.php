@@ -24,8 +24,8 @@ class LoginController
     {
         echo 'desde recuperar prueba';
     }
-    public static function crear()
+    public static function crear(Router $router)
     {
-        echo 'desde crear cuenta prueba';
+        $router->render('auth/crear-cuenta', []);
     }
 }
