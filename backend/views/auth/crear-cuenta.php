@@ -1,9 +1,15 @@
 <?php
-/** @var \Model\Usuario $usuario */ 
+
+/** @var \Model\Usuario $usuario */
 ?>
 
 <h1 class="nombre-pagina">Crear Cuenta</h1>
 <p class="descripcion-pagina">Llena el siguiente formulario para crear una cuenta</p>
+
+<?php
+include_once __DIR__ . '/../templates/alertas.php';
+?>
+
 
 <form class="fomulario" method="POST" action="">
     <div class="campo">
