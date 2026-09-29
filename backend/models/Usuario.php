@@ -48,6 +48,24 @@ class Usuario extends ActiveRecord
         if (!$this->password) {
             self::$alertas['error'][] = "El password es obligatorio";
         }
+        if (strlen($this->password) < 6) {
+            self::$alertas['error'][] = "El password debe tener al menos 6 caracteres";
+        }
         return static::$alertas;
+    }
+
+    // revisa si el usuario existe
+    public function existeUsuario()
+    {
+        $email = self::$db->escape_string($this->email);
+        $query = "SELECT * FROM " . static::$tabla . " WHERE email = '{$email}' LIMIT 1";
+
+        $resultado = self::$db->query($query);
+
+        if ($resultado->num_rows) {
+            self::$alertas['error'][] = "El usuario ya esta registrado";
+        }
+
+        return $resultado;
     }
 }
