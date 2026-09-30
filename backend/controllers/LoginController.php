@@ -44,7 +44,9 @@ class LoginController
                 if ($resultado->num_rows) {
                     $alertas = Usuario::getAlertas();
                 } else {
-                    // no esta registrado
+                    // hashear la contraseña
+                    $usuario->hashPassword();
+                    debuguear($usuario);
                 }
             }
         }
