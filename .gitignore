@@ -1,5 +1,6 @@
 # Dependencias PHP
 backend/vendor/
+**/vendor/
 
 # Dependencias JavaScript
 frontend/node_modules/
