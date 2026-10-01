@@ -2,13 +2,13 @@
 
 Aplicación web para gestionar los turnos de un salón de belleza: servicios, usuarios, citas y autenticación.
 
-El proyecto está diseñado para evolucionar hacia una arquitectura con una API en PHP (patrón MVC) y un frontend en React que se comunican mediante JSON. Ambas partes están en desarrollo inicial.
+El backend PHP MVC ya sirve las vistas iniciales de autenticación en XAMPP. El objetivo es completar primero el backend y después evolucionar hacia una API PHP y un frontend React que se comuniquen mediante JSON.
 
 ## Estado actual
 
-- **Hecho:** planificación y definición de la arquitectura.
-- **En curso:** preparación del backend y creación del proyecto de frontend con Vite.
-- **Todavía no ejecutable:** aún no hay aplicación que correr. Las casillas de [Funcionalidades](#funcionalidades) muestran el avance.
+- **Hecho:** estructura MVC inicial, conexión local a MySQL y páginas GET de login, crear cuenta y recuperar contraseña.
+- **En curso:** registro de usuarios y flujo de correo; la integración con React todavía no comenzó.
+- **Estado:** las páginas PHP se verificaron localmente con XAMPP. El registro, el inicio de sesión y el envío de correos todavía no son flujos funcionales completos. Las casillas de [Funcionalidades](#funcionalidades) detallan el avance.
 
 ## Arquitectura
 
@@ -34,14 +34,14 @@ React (frontend/)  →  fetch  →  API PHP MVC (backend/)  →  MySQL
 
 ## Stack
 
-| Capa             | Tecnología                                                       | Estado                               |
-| ---------------- | ---------------------------------------------------------------- | ------------------------------------ |
-| Backend          | PHP, patrón MVC, Router propio, Active Record                    | Planificado                          |
-| Dependencias PHP | Composer                                                         | Planificado                          |
-| Base de datos    | MySQL                                                            | A confirmar al configurar el backend |
-| Frontend         | React + Vite                                                     | Por crear                            |
-| Estilos          | SASS + Gulp en la interfaz PHP inicial; estilos propios en React | Planificado                          |
-| Tooling          | Node.js (LTS reciente) y npm                                     | Instalado                            |
+| Capa             | Tecnología                                                       | Estado                                    |
+| ---------------- | ---------------------------------------------------------------- | ----------------------------------------- |
+| Backend          | PHP, patrón MVC, Router propio, Active Record                    | Base inicial implementada                 |
+| Dependencias PHP | Composer y PHPMailer                                             | Declaradas en `backend/`; envío pendiente |
+| Base de datos    | MySQL                                                            | Conexión local configurada                |
+| Frontend         | React + Vite                                                     | Por crear                                 |
+| Estilos          | SASS + Gulp en la interfaz PHP inicial; estilos propios en React | SASS/Gulp disponibles; React pendiente    |
+| Tooling          | Node.js (LTS reciente) y npm                                     | Instalado                                 |
 
 ## Estructura objetivo del repositorio
 
@@ -49,18 +49,22 @@ Es la estructura hacia la que se construye el proyecto. Cada parte se marca en e
 
 ```text
 AppSalon/
-├── backend/                # API PHP MVC
+├── backend/                # Aplicación PHP MVC inicial; futura API
 │   ├── composer.json
 │   ├── gulpfile.js
 │   ├── package.json        # Compilación de la interfaz PHP inicial (no es el de React)
 │   ├── Router.php
 │   ├── controllers/
+│   │   └── LoginController.php
+│   ├── clases/
+│   │   └── Email.php       # Actualmente almacena datos; todavía no envía correo
 │   ├── includes/
 │   │   ├── app.php
 │   │   ├── database.php
 │   │   └── funciones.php
 │   ├── models/
-│   │   └── ActiveRecord.php
+│   │   ├── ActiveRecord.php
+│   │   └── Usuario.php
 │   ├── public/
 │   │   └── index.php
 │   ├── src/                # JS y SCSS de la interfaz PHP inicial
@@ -68,13 +72,15 @@ AppSalon/
 │   │   ├── js/
 │   │   └── scss/
 │   └── views/
+│       ├── auth/
+│       ├── templates/
 │       └── layout.php
 ├── frontend/               # React + Vite
 ├── .gitignore
 └── README.md
 ```
 
-Cada carpeta principal tiene sus propias dependencias: `vendor/` y `node_modules/` se generan dentro de `backend/` y `frontend/`, y ninguna se sube al repositorio.
+El backend carga Composer desde `backend/vendor/autoload.php`; `backend/composer.json` declara PHPMailer. Las carpetas `vendor/` y `node_modules/` son dependencias generadas y no se suben al repositorio.
 
 ## Funcionalidades
 
@@ -98,9 +104,11 @@ Cada carpeta principal tiene sus propias dependencias: `vendor/` y `node_modules
 
 ### Backend (PHP MVC)
 
-- [ ] Conexión a la base de datos
-- [ ] Router y primer controlador
-- [ ] Modelos con Active Record
+- [x] Conexión local a MySQL (configurada en `backend/includes/database.php`)
+- [x] Router y controlador inicial; las rutas GET de login, crear cuenta y olvido responden en XAMPP
+- [x] Base Active Record y modelo `Usuario` con validaciones iniciales
+- [ ] Registro completo de usuarios (validar, guardar y confirmar la cuenta)
+- [ ] Envío real de correo con PHPMailer (dependencia declarada; clase y flujo aún en desarrollo)
 - [ ] Autenticación y sesiones
 - [ ] CRUD de servicios
 - [ ] Gestión de citas
@@ -114,9 +122,17 @@ Cada carpeta principal tiene sus propias dependencias: `vendor/` y `node_modules
 
 ## Ejecución
 
-### Ejecución prevista
+### Ejecución local verificada
 
-Requisitos: Git, Node.js (LTS reciente) y npm, PHP, Composer y MySQL o MariaDB. Las versiones exactas de PHP y de las extensiones se documentarán al tener el `composer.json` definitivo.
+Las vistas PHP se comprobaron con XAMPP y Apache en estas rutas:
+
+```text
+http://localhost/AppSalon/backend/public/
+http://localhost/AppSalon/backend/public/crear-cuenta
+http://localhost/AppSalon/backend/public/olvide
+```
+
+Apache debe permitir `mod_rewrite` y leer `backend/public/.htaccess`. MySQL debe estar activo y tener disponible la base configurada en `backend/includes/database.php` (`appsalon_mvc`). La conexión depende de la configuración local de XAMPP.
 
 Frontend:
 
@@ -131,16 +147,13 @@ Backend:
 ```bash
 cd backend
 composer install
-npm install            # solo si se usa la compilación de la interfaz PHP
-php -S localhost:8000 -t public
+npm install            # solo si se usa Gulp para compilar la interfaz PHP
+npm run dev
 ```
 
 ### Configuración pendiente
 
-Las credenciales de base de datos y correo no se suben al repositorio. El plan es:
-
-1. Guardar los valores reales en un archivo `.env` local, ignorado por Git.
-2. Incluir un `.env.example` con los nombres de las variables y sin datos reales.
+La conexión actual a MySQL está configurada directamente en `backend/includes/database.php`. Las credenciales SMTP todavía no están configuradas porque el envío real de correo está pendiente. Antes de desplegar, conviene mover los valores locales a un archivo `.env` ignorado por Git e incluir un `.env.example` sin secretos.
 
 ## Convenciones
 
