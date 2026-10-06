@@ -139,6 +139,7 @@ class ActiveRecord
         return array_shift($resultado);
     }
 
+    /** @return static|null */
     public static function where($columna, $valor)
     {
         if (!in_array($columna, static::$columnasDB, true)) {

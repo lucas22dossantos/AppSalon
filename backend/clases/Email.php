@@ -40,7 +40,7 @@ class Email
 
         $contenido = '<html>';
         $contenido .= '<p><strong>Hola ' . $this->nombre . ',</strong> Has creado una cuenta AppSalon, solo debes confirmarla en el siguiente enlace. </p>';
-        $contenido .= '<p><a href="http://localhost:8000/confirmar?token=' . $this->token . '">Confirmar Cuenta</a></p>';
+        $contenido .= '<p><a href="http://localhost/AppSalon/backend/public/confirmar-cuenta?token=' . urlencode($this->token) . '">Confirmar Cuenta</a></p>';
         $contenido .= '<p>si tu no solicitaste esta cuenta, puedes ignorar este correo electrónico.</p>';
         $contenido .= '</html>';
 
