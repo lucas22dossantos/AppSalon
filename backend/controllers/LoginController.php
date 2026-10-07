@@ -12,7 +12,14 @@ class LoginController
     public static function login(Router $router)
     {
 
-        $router->render('auth/login');
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $auth = new Usuario($_POST);
+            $alertas = $auth->validarLogin();
+        }
+
+        $router->render('auth/login', [
+            'alertas' => $alertas ?? []
+        ]);
     }
     public static function logout()
     {
