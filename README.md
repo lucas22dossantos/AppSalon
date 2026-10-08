@@ -2,13 +2,13 @@
 
 Aplicación web para gestionar los turnos de un salón de belleza: servicios, usuarios, citas y autenticación.
 
-El backend PHP MVC ya sirve las vistas iniciales de autenticación en XAMPP. El objetivo es completar primero el backend y después evolucionar hacia una API PHP y un frontend React que se comuniquen mediante JSON.
+El backend PHP MVC ya sirve las vistas iniciales de autenticación en XAMPP e integra el envío del correo de confirmación con PHPMailer. El objetivo es completar primero el backend y después evolucionar hacia una API PHP y un frontend React que se comuniquen mediante JSON.
 
 ## Estado actual
 
-- **Hecho:** estructura MVC inicial, conexión local a MySQL y páginas GET de login, crear cuenta y recuperar contraseña.
-- **En curso:** registro de usuarios y flujo de correo; la integración con React todavía no comenzó.
-- **Estado:** las páginas PHP se verificaron localmente con XAMPP. El registro, el inicio de sesión y el envío de correos todavía no son flujos funcionales completos. Las casillas de [Funcionalidades](#funcionalidades) detallan el avance.
+- **Hecho:** estructura MVC inicial, conexión local a MySQL, vistas de autenticación, validación inicial, hash de contraseñas, generación de tokens y envío de correo con PHPMailer.
+- **En curso:** verificar que el enlace de confirmación actualice correctamente el usuario en MySQL, completar el inicio de sesión y la recuperación de contraseña. React todavía no está inicializado.
+- **Estado:** el correo de confirmación ya se envía. El registro completo depende de verificar la confirmación de la cuenta en la base de datos. Las casillas de [Funcionalidades](#funcionalidades) detallan el avance.
 
 ## Arquitectura
 
@@ -34,14 +34,14 @@ React (frontend/)  →  fetch  →  API PHP MVC (backend/)  →  MySQL
 
 ## Stack
 
-| Capa             | Tecnología                                                       | Estado                                    |
-| ---------------- | ---------------------------------------------------------------- | ----------------------------------------- |
-| Backend          | PHP, patrón MVC, Router propio, Active Record                    | Base inicial implementada                 |
-| Dependencias PHP | Composer y PHPMailer                                             | Declaradas en `backend/`; envío pendiente |
-| Base de datos    | MySQL                                                            | Conexión local configurada                |
-| Frontend         | React + Vite                                                     | Por crear                                 |
-| Estilos          | SASS + Gulp en la interfaz PHP inicial; estilos propios en React | SASS/Gulp disponibles; React pendiente    |
-| Tooling          | Node.js (LTS reciente) y npm                                     | Instalado                                 |
+| Capa             | Tecnología                                                       | Estado                                       |
+| ---------------- | ---------------------------------------------------------------- | -------------------------------------------- |
+| Backend          | PHP, patrón MVC, Router propio, Active Record                    | Base inicial implementada                    |
+| Dependencias PHP | Composer y PHPMailer                                             | Integradas; correo de confirmación funcional |
+| Base de datos    | MySQL                                                            | Conexión local configurada                   |
+| Frontend         | React + Vite                                                     | Por crear                                    |
+| Estilos          | SASS + Gulp en la interfaz PHP inicial; estilos propios en React | SASS/Gulp disponibles; React pendiente       |
+| Tooling          | Node.js (LTS reciente) y npm                                     | Instalado                                    |
 
 ## Estructura objetivo del repositorio
 
@@ -57,7 +57,7 @@ AppSalon/
 │   ├── controllers/
 │   │   └── LoginController.php
 │   ├── clases/
-│   │   └── Email.php       # Actualmente almacena datos; todavía no envía correo
+│   │   └── Email.php       # Envío del correo de confirmación con PHPMailer
 │   ├── includes/
 │   │   ├── app.php
 │   │   ├── database.php
@@ -108,7 +108,7 @@ El backend carga Composer desde `backend/vendor/autoload.php`; `backend/composer
 - [x] Router y controlador inicial; las rutas GET de login, crear cuenta y olvido responden en XAMPP
 - [x] Base Active Record y modelo `Usuario` con validaciones iniciales
 - [ ] Registro completo de usuarios (validar, guardar y confirmar la cuenta)
-- [ ] Envío real de correo con PHPMailer (dependencia declarada; clase y flujo aún en desarrollo)
+- [x] Envío de correo de confirmación con PHPMailer
 - [ ] Autenticación y sesiones
 - [ ] CRUD de servicios
 - [ ] Gestión de citas
@@ -130,6 +130,7 @@ Las vistas PHP se comprobaron con XAMPP y Apache en estas rutas:
 http://localhost/AppSalon/backend/public/
 http://localhost/AppSalon/backend/public/crear-cuenta
 http://localhost/AppSalon/backend/public/olvide
+http://localhost/AppSalon/backend/public/confirmar-cuenta?token=<token-del-correo>
 ```
 
 Apache debe permitir `mod_rewrite` y leer `backend/public/.htaccess`. MySQL debe estar activo y tener disponible la base configurada en `backend/includes/database.php` (`appsalon_mvc`). La conexión depende de la configuración local de XAMPP.
@@ -153,7 +154,7 @@ npm run dev
 
 ### Configuración pendiente
 
-La conexión actual a MySQL está configurada directamente en `backend/includes/database.php`. Las credenciales SMTP todavía no están configuradas porque el envío real de correo está pendiente. Antes de desplegar, conviene mover los valores locales a un archivo `.env` ignorado por Git e incluir un `.env.example` sin secretos.
+La conexión local a MySQL está configurada directamente en `backend/includes/database.php`. PHPMailer obtiene sus credenciales SMTP del archivo `.env` local, que no debe subirse al repositorio. Antes de desplegar, conviene mover también la configuración de base de datos a variables de entorno e incluir un `.env.example` sin secretos.
 
 ## Convenciones
 
