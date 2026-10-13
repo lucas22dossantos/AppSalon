@@ -1,13 +1,11 @@
 <?php
 
-
 namespace Classes;
 
 use PHPMailer\PHPMailer\PHPMailer;
 
 class Email
 {
-
     public $email;
     public $nombre;
     public $token;
@@ -41,6 +39,36 @@ class Email
         $contenido = '<html>';
         $contenido .= '<p><strong>Hola ' . $this->nombre . ',</strong> Has creado una cuenta AppSalon, solo debes confirmarla en el siguiente enlace. </p>';
         $contenido .= '<p><a href="http://localhost/AppSalon/backend/public/confirmar-cuenta?token=' . urlencode($this->token) . '">Confirmar Cuenta</a></p>';
+        $contenido .= '<p>si tu no solicitaste esta cuenta, puedes ignorar este correo electrónico.</p>';
+        $contenido .= '</html>';
+
+        $mail->Body = $contenido;
+
+        // Enviar el email
+        $mail->send();
+    }
+
+    public function enviarInstrucciones()
+    {
+        // crear el objeto de email
+        $mail = new PHPMailer();
+        $mail->isSMTP();
+        $mail->Host = $_ENV['EMAIL_HOST'];
+        $mail->SMTPAuth = true;
+        $mail->Port = $_ENV['EMAIL_PORT'];
+        $mail->Username = $_ENV['EMAIL_USER'];
+        $mail->Password = $_ENV['EMAIL_PASS'];
+        $mail->setFrom('cuenta@appsalon.com');
+        $mail->addAddress($this->email, $this->nombre);
+        $mail->Subject = 'Restablece tu password';
+
+        // set HTML
+        $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8';
+
+        $contenido = '<html>';
+        $contenido .= '<p><strong>Hola ' . $this->nombre . ',</strong> Has solicitado restablecer tu password, sigue el enlace para hacerlo. </p>';
+        $contenido .= '<p><a href="http://localhost/AppSalon/backend/public/recuperar?token=' . urlencode($this->token) . '">Reestablecer Password</a></p>';
         $contenido .= '<p>si tu no solicitaste esta cuenta, puedes ignorar este correo electrónico.</p>';
         $contenido .= '</html>';
 
